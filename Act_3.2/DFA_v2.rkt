@@ -140,9 +140,7 @@ to determine token type of an entry arethmetic function.
 
 
 (define (arithmetic-lexer input-string) ; MAIN FUNCTION in charge of calling the function containing DFA and recursive properties
-    (validate-string input-string (list accept-arithmetic 'q0 (list 'int 'var
-                                                                    'par_1 'space 'float)))) ; calling DFA function (validate-string) & transition function (accecpt-arithmetic)
-
+    (validate-string input-string (list accept-arithmetic 'q0 (list 'int 'var 'par_1 'space 'float)))) ; calling DFA function (validate-string) & transition function (accecpt-arithmetic)
 
 (define test-arithmetic-lexer
     (test-suite

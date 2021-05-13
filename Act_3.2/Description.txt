@@ -1,0 +1,6 @@
+Racket program must hightlight similar to other IDEs (Different color per data
+type)
+
+1. Key (Color_1)
+2. String (Color_2)
+3. Number (Color_3)
