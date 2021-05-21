@@ -1,6 +1,11 @@
-#lang racket
+;;; Problems
 
-(require racket/trace)
+;;; 1.- No funciona el regex
+;;; 2.- Modificar write-file function para que
+;;; -> Empieze a escribir en la ultima linea del documento
+;;; -> Pueda escribir correctamente una lista de listas
+
+#lang racket
 
 ; Indicate the functions available in this script
 (provide main)
@@ -31,7 +36,8 @@
             result
             (loop (read-line in) (append result (list line))))))))
 
-(define (strip_whitespace lst)
+
+(define (apply_regex lst)
 (let loop
     ([lst lst] [result empty])
     (if (empty? lst)
@@ -44,16 +50,55 @@
 
 
 (define (main in-file-path out-file-path)
-    ;;; Leer el json
-    (define data (read-file in-file-path))
-    (println data)
+    
     ;;; Escribir el boiler plate de html
+
+    (define open_html (list 
+    "<!DOCTYPE html>" 
+    "<html lang=\"en\">" 
+    "<head>" 
+    "    <meta charset=\"UTF-8\">" 
+    "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">" 
+    "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" 
+    "    <title>Document</title>" 
+    "    <style>" 
+    "        .number{ color: red; display: inline; }" 
+    "        .key{ color: green; display: inline; }" 
+    "        .string{ color: orange; display: inline; }" 
+    "    </style>" 
+    "</head>"
+    "<body>"))
+
+    ;;; Leer el json
+
+    ;;; (define data (read-file in-file-path))
+
+    ;;; Aplicar regex
+
+    ;;; (define json (apply_regex data))
+
     ;;; Iterar la lista de elementos de json y crear su partes html
-    (define test (strip_whitespace (list 1 2 3)))
-    (println test))
-    ;;; Escribir elementos de json con html en file
+
+    (define json_html (list 
+    "{"
+    "<br>"
+    "<p class=\"key\"> \"hola\" </p>"
+    "<br>"
+    "}"
+    ))
+
     ;;; Escribir closing tags
-    ;;; (write-file out-file-path result))
+
+    (define close_html (list
+    "</body>"
+    "</html>"))
+
+    ;;; Generate file in a list
+
+    (define complete_file (list open_html json_html close_html))
+    (write-file out-file-path complete_file)
+    )
 
 
 (main "text.txt" "new_text.txt")
+
