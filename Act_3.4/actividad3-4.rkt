@@ -44,8 +44,35 @@
         result
     (loop
         (cdr lst)
-        (append result (regexp-match #px"\\(?>-?\\(?>0|[1-9]\\d*\\)\\(?>\\.\\d+\\)?\\(?>[E|e]-?\\(?>-?\\(?>0|[1-9]\\d*\\)\\(?>\\.\\d+\\)?\\)\\)?\\)" (car lst)))
+        (append result (identify-object (car lst)))
     ))))
+
+    (define (identify-object word)
+    (let-values ([(token type)
+      (cond
+        ;;; Key
+        [(regexp-match? #px"\"[\\w]+\":" word) (values (regexp-match #px"\"[\\w]+\":" word) 'key)]
+        ;;; String
+        [(regexp-match? #px"\"[\\w]+\"" word) (values (regexp-match #px"\"[\\w]+\"" word) 'string)]
+        ;;; whitespace
+        [(regexp-match? #px"\\s+" word) (values (regexp-match #px"\\s+" word) 'whitespace)]
+        ;;; Number
+        [(regexp-match? #px"(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?(?>[E|e]-?(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?))?)" word) (values (regexp-match #px"(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?(?>[E|e]-?(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?))?)" word) 'number)]
+        ;;; Null
+        [(regexp-match? #px"null" word) (values (regexp-match #px"null" word) 'null)]
+        ;;; True
+        [(regexp-match? #px"true" word) (values (regexp-match #px"true" word) 'true)]
+        ;;; False
+        [(regexp-match? #px"false" word) (values (regexp-match #px"false" word) 'false)]
+        ;;; {}
+        [(regexp-match? #px"[{]|[}]" word) (values (regexp-match #px"[{]|[}]" word) 'curly_braces)]
+        ;;; []
+        [(regexp-match? #px"[[]|[]]" word) (values (regexp-match #px"[[]|[]]" word) 'bracket)]
+        ;;; Else
+        [else (values '() 'error)]
+      )])))
+
+
 
 
 
@@ -71,11 +98,14 @@
 
     ;;; Leer el json
 
-    ;;; (define data (read-file in-file-path))
+    (define data (read-file in-file-path))
+    ;;; (println data)
 
     ;;; Aplicar regex
 
-    ;;; (define json (apply_regex data))
+    (define json (apply_regex '("    " "1234" "\"hello_345\":" "\"STRING\"" "null" "true" "false" "{" "}" "[" "]")))
+    (println json)
+    ;;; (displayln json)
 
     ;;; Iterar la lista de elementos de json y crear su partes html
 
@@ -96,9 +126,8 @@
     ;;; Generate file in a list
 
     (define complete_file (list open_html json_html close_html))
-    (write-file out-file-path complete_file)
+    (write-file out-file-path open_html)
     )
 
 
 (main "text.txt" "new_text.txt")
-
