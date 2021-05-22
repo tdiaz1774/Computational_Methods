@@ -1,9 +1,3 @@
-;;; Problems
-
-;;; 1.- No funciona el regex
-;;; 2.- Modificar write-file function para que
-;;; -> Empieze a escribir en la ultima linea del documento
-;;; -> Pueda escribir correctamente una lista de listas
 
 #lang racket
 
