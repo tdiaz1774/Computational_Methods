@@ -44,33 +44,37 @@
         result
     (loop
         (cdr lst)
-        (append result (identify-object (car lst)))
+        (append result (list (identify-object (car lst))))
     ))))
 
     (define (identify-object word)
+    (println word)
     (let-values ([(token type)
       (cond
         ;;; Key
-        [(regexp-match? #px"\"[\\w]+\":" word) (values (regexp-match #px"\"[\\w]+\":" word) 'key)]
+        [(regexp-match? #px"\"[\\w]+\":" word) (values (car (regexp-match #px"\"[\\w]+\":" word)) 'key)]
         ;;; String
-        [(regexp-match? #px"\"[\\w]+\"" word) (values (regexp-match #px"\"[\\w]+\"" word) 'string)]
-        ;;; whitespace
-        [(regexp-match? #px"\\s+" word) (values (regexp-match #px"\\s+" word) 'whitespace)]
+        [(regexp-match? #px"\"[\\w]+\"" word) (values (car (regexp-match #px"\"[\\w]+\"" word)) 'string)]
         ;;; Number
-        [(regexp-match? #px"(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?(?>[E|e]-?(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?))?)" word) (values (regexp-match #px"(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?(?>[E|e]-?(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?))?)" word) 'number)]
+        [(regexp-match? #px"(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?(?>[E|e]-?(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?))?)" word) (values (car (regexp-match #px"(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?(?>[E|e]-?(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?))?)" word)) 'number)]
         ;;; Null
-        [(regexp-match? #px"null" word) (values (regexp-match #px"null" word) 'null)]
+        [(regexp-match? #px"null" word) (values (car (regexp-match #px"null" word)) 'null)]
         ;;; True
-        [(regexp-match? #px"true" word) (values (regexp-match #px"true" word) 'true)]
+        [(regexp-match? #px"true" word) (values (car (regexp-match #px"true" word)) 'true)]
         ;;; False
-        [(regexp-match? #px"false" word) (values (regexp-match #px"false" word) 'false)]
+        [(regexp-match? #px"false" word) (values (car (regexp-match #px"false" word)) 'false)]
         ;;; {}
-        [(regexp-match? #px"[{]|[}]" word) (values (regexp-match #px"[{]|[}]" word) 'curly_braces)]
+        [(regexp-match? #px"[{]|[}]" word) (values (car (regexp-match #px"[{]|[}]" word)) 'curly_braces)]
         ;;; []
-        [(regexp-match? #px"[[]|[]]" word) (values (regexp-match #px"[[]|[]]" word) 'bracket)]
+        [(regexp-match? #px"[[]|[]]" word) (values (car (regexp-match #px"[[]|[]]" word)) 'bracket)]
+        ;;; Comma
+        [(regexp-match? #px"," word) (values (car (regexp-match #px"," word)) 'comma)]
+        ;;; whitespace
+        [(regexp-match? #px"\\s+" word) (values (car (regexp-match #px"\\s+" word)) 'whitespace)]
         ;;; Else
         [else (values '() 'error)]
-      )])))
+      )])
+      (list type token)))
 
 
 
@@ -99,11 +103,11 @@
     ;;; Leer el json
 
     (define data (read-file in-file-path))
-    ;;; (println data)
+    (println data)
 
     ;;; Aplicar regex
 
-    (define json (apply_regex '("    " "1234" "\"hello_345\":" "\"STRING\"" "null" "true" "false" "{" "}" "[" "]")))
+    (define json (apply_regex data))
     (println json)
     ;;; (displayln json)
 
