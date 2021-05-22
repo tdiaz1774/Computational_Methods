@@ -1,4 +1,12 @@
+#|
+Jorge Cabiedes Acosta a01024053
+Tomas Diaz Servin A01637531
+Mateo Gonzalez Cosio A01023938
 
+Program which utilizes Regular Expressions to convert JSON file into HTML file, with color coded values.
+21/05/2021
+
+|#
 #lang racket
 
 ; Indicate the functions available in this script
