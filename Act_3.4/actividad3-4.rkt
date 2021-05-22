@@ -1,9 +1,3 @@
-;;; Problems
-
-;;; 1.- No funciona el regex
-;;; 2.- Modificar write-file function para que
-;;; -> Empieze a escribir en la ultima linea del documento
-;;; -> Pueda escribir correctamente una lista de listas
 
 #lang racket
 
@@ -117,6 +111,9 @@
 
 
 (define (main in-file-path out-file-path)
+
+    (define time (current-inexact-milliseconds))
+
     
     ;;; Escribir el boiler plate de html
 
@@ -167,6 +164,7 @@
 
     (define complete_file (apply append (list open_html json_html close_html)))
     (write-file out-file-path complete_file)
+    (displayln (- (current-inexact-milliseconds) time))
     )
 
 
