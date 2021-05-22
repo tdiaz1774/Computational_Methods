@@ -59,8 +59,7 @@
       ;;; String
       [(regexp-match? #px"^\"[\\w]+\"" word) (values (car (regexp-match #px"^\"[\\w]+\"" word)) 'string)]
       ;;; Number
-      ;;;[(regexp-match? #px"^(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?(?>[E|e]-?(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?))?)" word) (values (car (regexp-match #px"^(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?(?>[E|e]-?(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?))?)" word)) 'number)]
-      [(regexp-match? #px"^[0-9]+" word) (values (car (regexp-match #px"^[0-9]+" word)) 'number)]
+      [(regexp-match? #px"^(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?(?>[E|e]-?(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?))?)" word) (values (car (regexp-match #px"^(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?(?>[E|e]-?(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?))?)" word)) 'number)]
       ;;; Null
       [(regexp-match? #px"^null" word) (values (car (regexp-match #px"^null" word)) 'null)]
       ;;; True
