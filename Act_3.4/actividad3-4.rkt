@@ -47,34 +47,39 @@
         (append result (list (identify-object (car lst))))
     ))))
 
-    (define (identify-object word)
-    (println word)
-    (let-values ([(token type)
-      (cond
-        ;;; Key
-        [(regexp-match? #px"\"[\\w]+\":" word) (values (car (regexp-match #px"\"[\\w]+\":" word)) 'key)]
-        ;;; String
-        [(regexp-match? #px"\"[\\w]+\"" word) (values (car (regexp-match #px"\"[\\w]+\"" word)) 'string)]
-        ;;; Number
-        [(regexp-match? #px"(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?(?>[E|e]-?(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?))?)" word) (values (car (regexp-match #px"(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?(?>[E|e]-?(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?))?)" word)) 'number)]
-        ;;; Null
-        [(regexp-match? #px"null" word) (values (car (regexp-match #px"null" word)) 'null)]
-        ;;; True
-        [(regexp-match? #px"true" word) (values (car (regexp-match #px"true" word)) 'true)]
-        ;;; False
-        [(regexp-match? #px"false" word) (values (car (regexp-match #px"false" word)) 'false)]
-        ;;; {}
-        [(regexp-match? #px"[{]|[}]" word) (values (car (regexp-match #px"[{]|[}]" word)) 'curly_braces)]
-        ;;; []
-        [(regexp-match? #px"[[]|[]]" word) (values (car (regexp-match #px"[[]|[]]" word)) 'bracket)]
-        ;;; Comma
-        [(regexp-match? #px"," word) (values (car (regexp-match #px"," word)) 'comma)]
-        ;;; whitespace
-        [(regexp-match? #px"\\s+" word) (values (car (regexp-match #px"\\s+" word)) 'whitespace)]
-        ;;; Else
-        [else (values '() 'error)]
-      )])
-      (list type token)))
+(define (identify-object word)
+(let loop
+  ([word word] [lst empty])
+  (if (string=? word "")
+    lst
+  (let-values ([(token type)
+    (cond
+      ;;; Key
+      [(regexp-match? #px"^\"[\\w]+\":" word) (values (car (regexp-match #px"^\"[\\w]+\":" word)) 'key)]
+      ;;; String
+      [(regexp-match? #px"^\"[\\w]+\"" word) (values (car (regexp-match #px"^\"[\\w]+\"" word)) 'string)]
+      ;;; Number
+      ;;;[(regexp-match? #px"^(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?(?>[E|e]-?(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?))?)" word) (values (car (regexp-match #px"^(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?(?>[E|e]-?(?>-?(?>0|[1-9]\\d*)(?>\\.\\d+)?))?)" word)) 'number)]
+      [(regexp-match? #px"^[0-9]+" word) (values (car (regexp-match #px"^[0-9]+" word)) 'number)]
+      ;;; Null
+      [(regexp-match? #px"^null" word) (values (car (regexp-match #px"^null" word)) 'null)]
+      ;;; True
+      [(regexp-match? #px"^true" word) (values (car (regexp-match #px"^true" word)) 'true)]
+      ;;; False
+      [(regexp-match? #px"^false" word) (values (car (regexp-match #px"^false" word)) 'false)]
+      ;;; {}
+      [(regexp-match? #px"^[{]|[}]" word) (values (car (regexp-match #px"^[{]|[}]" word)) 'curly_braces)]
+      ;;; []
+      [(regexp-match? #px"^[[]|[]]" word) (values (car (regexp-match #px"^[[]|[]]" word)) 'bracket)]
+      ;;; Comma
+      [(regexp-match? #px"^," word) (values (car (regexp-match #px"^," word)) 'comma)]
+      ;;; whitespace
+      [(regexp-match? #px"^\\s+" word) (values (car (regexp-match #px"^\\s+" word)) 'whitespace)]
+      ;;; Else
+      [else (values '() 'error)]
+    )])
+    (loop (substring word (string-length token))
+      (append lst (list (list token type))))))))
 
 
 
