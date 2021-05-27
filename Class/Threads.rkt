@@ -14,11 +14,13 @@ Jorge Cabiedes
     (cond
       [(< n limit)
        (printf "Thread ~a | Number ~a\n" name n)
+       ; Force the thread to wait, let others run too
+       (sleep (random))
        (loop (add1 n))]
       [else (printf "Finished!\n")])))))
 
-(define (main)
-  (define my-thread-1 (make-thread "One" 10))
+(define (main num-threads)
+  (define my-thread-1 (mak num-threads)e-thread "One" 10))
   (define my-thread-2 (make-thread "Two" 10))
   (define my-thread-3 (make-thread "Three" 10))
   (for ([n 20])
