@@ -1,6 +1,4 @@
-
-
-#Reflexión Actividad 3.4
+Reflexión Actividad 3.4
 
 Tomas Diaz Servin A01637531
 
