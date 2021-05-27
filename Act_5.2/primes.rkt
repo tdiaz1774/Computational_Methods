@@ -17,6 +17,7 @@ Functions to sum all the prime numbers smaller than a limit
   ; Loop from 0 to limit
   ; check each number for primality
   ; add to total if it is prime
+  (define time (current-inexact-milliseconds))
   (let loop
     ([num 2] [sum 0])
     (cond
@@ -24,7 +25,8 @@ Functions to sum all the prime numbers smaller than a limit
       [(equal? num limit) sum]
       [(prime? num) (loop (+ num 1) (+ sum num))]
       [else (loop (+ num 1) sum)])
-    ))
+    )
+  (displayln (- (current-inexact-milliseconds) time)))
 
 (define (sum-primes-threads limit [start 2])
   (future (lambda ()
@@ -39,13 +41,18 @@ Functions to sum all the prime numbers smaller than a limit
 
 (define (main num-threads limit)
   ; List of starts per thread
-  (define n '(1 11 21))
+  (define time (current-inexact-milliseconds))
+  (define start
+    (for/list ([i (in-range 0 limit (ceiling(/ limit num-threads)))])
+              i))
   ; List of limits per thread
-  (define l '(10 20 30))
-  (define futures (map sum-primes-threads l n))
+  (define limits (append (rest start) (list limit)))
+  (define start_values (map add1 start))
+  (define futures (map sum-primes-threads limits start_values))
   ; Launch all the futures in the list
   (define result (map touch futures))
-  (println (apply + result)))
+  (println (apply + result))
+  (displayln (- (current-inexact-milliseconds) time)))
 
 
 
