@@ -21,12 +21,12 @@ Functions to sum all the prime numbers smaller than a limit
   (let loop
     ([num 2] [sum 0])
     (cond
-      [(and (prime? num) (equal? num limit)) (+ sum num)]
-      [(equal? num limit) sum]
+      [(and (prime? num) (equal? num limit)) (println (+ sum num))]
+      [(equal? num limit) (println sum)]
       [(prime? num) (loop (+ num 1) (+ sum num))]
       [else (loop (+ num 1) sum)])
     )
-  (displayln (- (current-inexact-milliseconds) time)))
+   (println (- (current-inexact-milliseconds) time)))
 
 (define (sum-primes-threads limit [start 2])
   (future (lambda ()
@@ -53,9 +53,4 @@ Functions to sum all the prime numbers smaller than a limit
   (define result (map touch futures))
   (println (apply + result))
   (displayln (- (current-inexact-milliseconds) time)))
-
-
-
-
-
 
