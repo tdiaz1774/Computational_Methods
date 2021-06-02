@@ -1,6 +1,18 @@
+
 #|
-Functions to sum all the prime numbers smaller than a limit
+   Actividad 5.2 Concurrency
+
+   Jorge Cabiedes, A01024053
+   Mateo Gonzales Cosio, A01023938
+   Tomás Díaz Servín, A01637531
+   
+   Code that calculates prime numbers and then finds the sum using    
+ Multiple threads (in our case 16).
+   02/06/2021
+
 |#
+
+
 
 #lang racket
 
