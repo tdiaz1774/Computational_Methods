@@ -12,4 +12,6 @@ Tp = 2461.496826171875 ms
 
 Sp =T1/Tp =7.611680123099006 
 
-To test out our program, we employed the use of 16 threads which represent the amount of cores that the test runner’s computer has. Our parallel algorithm was able to find the sum of primes between 1 - 5,000,000 seven times faster than our sequential algorithm which was an expected outcome due to the nature of a parallel algorithm.
+To test out our program, we employed the use of 16 futures which represent the amount of cores that the test runner’s computer has. Our parallel algorithm was able to find the sum of primes between 1 - 5,000,000 seven times faster than our sequential algorithm which was an expected outcome due to the nature of a parallel algorithm.
+
+To divide the work throughout the futures we segmented the number in different ranges and assigned each one to a future. This way each future processes a different segment of the number and in the end we add the results.
