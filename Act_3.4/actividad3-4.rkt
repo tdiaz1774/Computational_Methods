@@ -7,6 +7,7 @@ Program which utilizes Regular Expressions to convert JSON file into HTML file, 
 21/05/2021
 
 |#
+
 #lang racket
 
 ; Indicate the functions available in this script
@@ -22,7 +23,7 @@ Program which utilizes Regular Expressions to convert JSON file into HTML file, 
         ([lst data])
         (cond
           [(not (empty? lst))
-             (display (car lst) out)
+             (display(car lst) out)
              (loop (cdr lst))])))))
 
 
@@ -59,7 +60,7 @@ Program which utilizes Regular Expressions to convert JSON file into HTML file, 
       ;;; Key
       [(regexp-match? #px"^\"[^\"]*\"[\\s]*:" word) (values (car (regexp-match #px"^\"[^\"]*\"[\\s]*:" word)) 'key)]
       ;;; String
-      [(regexp-match? #px"^\"[^\"]*\"[\\s]*" word) (values (car (regexp-match #px"^\"[^\"]*\"[\\s]*" word)) 'string)]
+      [(regexp-match? #px"^\"[^\"]*\"" word) (values (car (regexp-match #px"^\"[^\"]*\"" word)) 'string)]
       ;;; Number
       [(regexp-match? #px"^(?>-?(?>0|[1-9][0-9]*)(?>\\.[0-9]+)?(?>[eE][+-]?[0-9]+)?)" word) (values (car (regexp-match #px"^(?>-?(?>0|[1-9][0-9]*)(?>\\.[0-9]+)?(?>[eE][+-]?[0-9]+)?)" word)) 'number)]
       ;;; Null
@@ -90,10 +91,10 @@ Program which utilizes Regular Expressions to convert JSON file into HTML file, 
 ;;; ("{" curly_braces) -> <span="curly_braces">"}"</span>"
 
 (define (tokentype_html token_type)
-(define type_string (slist->string (cdr token_type)))
-(if (string=? type_string "whitespace")
-  (car token_type)
-(string-append "<span class=\"" (slist->string (cdr token_type)) "\">" (car token_type) "</span>" )))
+  (define type_string (slist->string (cdr token_type)))
+  (if (string=? type_string "whitespace")
+    (car token_type)
+    (string-append "<span class=\"" (slist->string (cdr token_type)) "\">" (car token_type) "</span>" )))
 
 ;;; linea
 
@@ -126,22 +127,23 @@ Program which utilizes Regular Expressions to convert JSON file into HTML file, 
     ;;; Escribir el boiler plate de html
 
     (define open_html (list 
-    "<!DOCTYPE html>" 
-    "<html lang=\"en\">" 
-    "<head>" 
-    "    <meta charset=\"UTF-8\">" 
-    "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">" 
-    "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" 
-    "    <title>Document</title>" 
-    "    <style>" 
-    "        .number{ color: red; }" 
-    "        .key{ color: green; }" 
-    "        .string{ color: orange; }"
-    "        .whitespace{ display: none; }" 
-    "    </style>" 
-    "</head>"
-    "<body>"
-    "<pre>"))
+    "<!DOCTYPE html>\n" 
+    "<html lang=\"en\">\n" 
+    "<head>\n" 
+    "    <meta charset=\"UTF-8\">\n" 
+    "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" 
+    "    <meta name=\"viewport\" content=\"width=device-width,
+    initial-scale=1.0\">\n" 
+    "    <title>Document</title>\n" 
+    "    <style>\n" 
+    "        .number{ color: red; }\n" 
+    "        .key{ color: green; }\n" 
+    "        .string{ color: orange; }\n"
+    "        .whitespace{ display: none; }\n" 
+    "    </style>\n" 
+    "</head>\n"
+    "<body>\n"
+    "<pre>\n"))
 
     ;;; Leer el json
 
