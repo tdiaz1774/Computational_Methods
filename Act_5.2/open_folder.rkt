@@ -10,7 +10,7 @@
         ([lst data])
         (cond
           [(not (empty? lst))
-             (displayln (car lst) out)
+             (display (car lst) out)
              (loop (cdr lst))])))))
 
 
@@ -41,7 +41,7 @@
 (let loop
   ([word word] [lst empty])
   (if (string=? word "")
-    lst
+    (append lst (list(list "\n" 'new_line)))
   (let-values ([(token type)
     (cond
       ;;; Key
@@ -113,22 +113,22 @@
     ;;; Escribir el boiler plate de html
 
     (define open_html (list 
-    "<!DOCTYPE html>" 
-    "<html lang=\"en\">" 
-    "<head>" 
-    "    <meta charset=\"UTF-8\">" 
-    "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">" 
-    "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" 
-    "    <title>Document</title>" 
-    "    <style>" 
-    "        .number{ color: red; }" 
-    "        .key{ color: green; }" 
-    "        .string{ color: orange; }"
-    "        .whitespace{ display: none; }" 
-    "    </style>" 
-    "</head>"
-    "<body>"
-    "<pre>"))
+    "<!DOCTYPE html>\n" 
+    "<html lang=\"en\">\n" 
+    "<head>\n" 
+    "    <meta charset=\"UTF-8\">\n" 
+    "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" 
+    "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" 
+    "    <title>Document</title>\n" 
+    "    <style>\n" 
+    "        .number{ color: red; }\n" 
+    "        .key{ color: green; }\n"
+    "        .string{ color: orange; }\n"
+    "        .whitespace{ display: none; }\n" 
+    "    </style>\n" 
+    "</head>\n"
+    "<body>\n"
+    "<pre>\n"))
 
     ;;; Leer el json
 
