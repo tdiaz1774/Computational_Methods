@@ -8,7 +8,6 @@
 #lang racket
 
 ; Indicate the functions available in this script
-(provide main)
 
 ;;; Write to file function
 
@@ -55,9 +54,9 @@
   (let-values ([(token type)
     (cond
       ;;; Key
-      [(regexp-match? #px"^\"[^\"]*\"[\\s]*:" word) (values (car (regexp-match #px"^\"[^\"]*\"[\\s]*:" word)) 'key)]
+      [(regexp-match? #px"^\"[^\"]*\":" word) (values (car (regexp-match #px"^\"[^\"]*\":" word)) 'key)]
       ;;; String
-      [(regexp-match? #px"^\"[^\"]*\"[\\s]*" word) (values (car (regexp-match #px"^\"[^\"]*\"[\\s]*" word)) 'string)]
+      [(regexp-match? #px"^\"[^\"]*\"" word) (values (car (regexp-match #px"^\"[^\"]*\"" word)) 'string)]
       ;;; Number
       [(regexp-match? #px"^(?>-?(?>0|[1-9][0-9]*)(?>\\.[0-9]+)?(?>[eE][+-]?[0-9]+)?)" word) (values (car (regexp-match #px"^(?>-?(?>0|[1-9][0-9]*)(?>\\.[0-9]+)?(?>[eE][+-]?[0-9]+)?)" word)) 'number)]
       ;;; Null
@@ -116,27 +115,29 @@
         (append result (list (line_html (car json))))))))
 
 
-(define (main in-file-path out-file-path)
-    
+(define (highlighter in-file-path)
+
+    (define file_name (substring in-file-path 0 (- (string-length in-file-path) 5)))
+    (define out-file-path (string-append file_name ".html"))
     ;;; Escribir el boiler plate de html
 
     (define open_html (list 
-    "<!DOCTYPE html>" 
-    "<html lang=\"en\">" 
-    "<head>" 
-    "    <meta charset=\"UTF-8\">" 
-    "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">" 
-    "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" 
-    "    <title>Document</title>" 
-    "    <style>" 
-    "        .number{ color: red; }" 
-    "        .key{ color: green; }" 
-    "        .string{ color: orange; }"
-    "        .whitespace{ display: none; }" 
-    "    </style>" 
-    "</head>"
-    "<body>"
-    "<pre>"))
+    "<!DOCTYPE html>\n" 
+    "<html lang=\"en\">\n" 
+    "<head>\n" 
+    "    <meta charset=\"UTF-8\">\n" 
+    "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" 
+    "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" 
+    "    <title>Document</title>\n" 
+    "    <style>\n" 
+    "        .number{ color: red; }\n" 
+    "        .key{ color: green; }\n" 
+    "        .string{ color: orange; }\n"
+    "        .whitespace{ display: none; }\n" 
+    "    </style>\n" 
+    "</head>\n"
+    "<body>\n"
+    "<pre>\n"))
 
     ;;; Leer el json
 
@@ -159,15 +160,20 @@
     ;;; Escribir closing tags
 
     (define close_html (list
-    "</pre>"
-    "</body>"
-    "</html>"))
+    "</pre>\n"
+    "</body>\n"
+    "</html>\n"))
 
     ;;; Generate file in a list
 
     (define complete_file (apply append (list open_html json_html close_html)))
     (write-file out-file-path complete_file)
+    out-file-path
     )
 
+(define (highlight_files files)
+(map highlighter files)
+)
 
-(main "input.json" "index.html")
+
+(highlight_files '("hello.json"))
