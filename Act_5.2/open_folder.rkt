@@ -1,16 +1,15 @@
 #|
-Jorge Cabiedes Acosta a01024053
+Jorge Cabiedes Acosta A01024053
 Tomas Diaz Servin A01637531
 Mateo Gonzalez Cosio A01023938
 
-Program which utilizes Regular Expressions to convert JSON file into HTML file, with color coded values.
-21/05/2021
+Program which utilizes Regular Expressions and Parallelism to convert JSON file into HTML file, with color coded values.
+04/06/2021
 
 |#
 
-#lang racket
 
-; Indicate the functions available in this script
+#lang racket
 
 ;;; Write to file function
 
@@ -22,7 +21,7 @@ Program which utilizes Regular Expressions to convert JSON file into HTML file, 
         ([lst data])
         (cond
           [(not (empty? lst))
-             (display(car lst) out)
+             (display (car lst) out)
              (loop (cdr lst))])))))
 
 
@@ -53,7 +52,7 @@ Program which utilizes Regular Expressions to convert JSON file into HTML file, 
 (let loop
   ([word word] [lst empty])
   (if (string=? word "")
-    lst
+    (append lst (list(list "\n" 'new_line)))
   (let-values ([(token type)
     (cond
       ;;; Key
@@ -90,10 +89,10 @@ Program which utilizes Regular Expressions to convert JSON file into HTML file, 
 ;;; ("{" curly_braces) -> <span="curly_braces">"}"</span>"
 
 (define (tokentype_html token_type)
-  (define type_string (slist->string (cdr token_type)))
-  (if (string=? type_string "whitespace")
-    (car token_type)
-    (string-append "<span class=\"" (slist->string (cdr token_type)) "\">" (car token_type) "</span>" )))
+(define type_string (slist->string (cdr token_type)))
+(if (string=? type_string "whitespace")
+  (car token_type)
+(string-append "<span class=\"" (slist->string (cdr token_type)) "\">" (car token_type) "</span>" )))
 
 ;;; linea
 
@@ -134,7 +133,7 @@ Program which utilizes Regular Expressions to convert JSON file into HTML file, 
     "    <title>Document</title>\n" 
     "    <style>\n" 
     "        .number{ color: red; }\n" 
-    "        .key{ color: green; }\n" 
+    "        .key{ color: green; }\n"
     "        .string{ color: orange; }\n"
     "        .whitespace{ display: none; }\n" 
     "    </style>\n" 
@@ -175,8 +174,37 @@ Program which utilizes Regular Expressions to convert JSON file into HTML file, 
     )
 
 (define (highlight_files files)
-(map highlighter files)
+  (future (lambda ()
+  (map highlighter files)
+)))
+
+
+;;; Get files in a folder
+(define (get_json_files folder-path)
+    ;;; Get files that are inside a directory
+    (define files (directory-list folder-path))
+    ;;; Loop through the files and select only the ones that end in ".json"
+    (define file (map (lambda (v)
+           (regexp-match #px".*.json$" v))
+           files))
+    (define result (apply append (remove* '(#f) file)))
+    result)
+
+
+(define (main num-threads folder-path)
+    ;;; Get all json files in folder
+    (define json_files (get_json_files folder-path))
+    (define json_files_split (split-by json_files num-threads))
+
+    ;;; Create threads
+    (define futures (map highlight_files json_files_split))
+    ;;; Launch all the futures in the list
+    (define result (map touch futures))
+    result
 )
 
+(define (split-by lst n)
+        (if (not (empty? lst))
+            (cons (take lst n) (split-by (drop lst n) n))
+            '() ))
 
-(highlight_files '("hello.json"))
