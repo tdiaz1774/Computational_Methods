@@ -1,3 +1,14 @@
+#|
+Jorge Cabiedes Acosta A01024053
+Tomas Diaz Servin A01637531
+Mateo Gonzalez Cosio A01023938
+
+Program which utilizes Regular Expressions and Parallelism to convert JSON file into HTML file, with color coded values.
+04/06/2021
+
+|#
+
+
 #lang racket
 
 ;;; Write to file function
@@ -197,6 +208,3 @@
             (cons (take lst n) (split-by (drop lst n) n))
             '() ))
 
-
-
-(main 2 "../Act_5.2")
